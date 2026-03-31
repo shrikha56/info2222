@@ -5,7 +5,6 @@
 - Austin Godfrey
 - Shrikha Pentakota
 - Aisha Alhindaassi
-- 
 
 ## Repository
 USyd GitHub: https://github.sydney.edu.au/INFO2222-2026-S1/PRJ-T14-G07-PH01-ui.git
