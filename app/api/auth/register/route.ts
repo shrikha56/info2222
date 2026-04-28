@@ -12,16 +12,18 @@ type RegisterBody = {
 
 export async function POST(request: Request) {
   const body = (await request.json()) as RegisterBody;
-  const username = body.username?.trim().toLowerCase();
+  const usernameRaw = body.username?.trim();
   const password = body.password ?? "";
-  const displayName = body.displayName?.trim() || username;
 
-  if (!username || username.length < 3) {
+  if (!usernameRaw || usernameRaw.length < 3) {
     return NextResponse.json(
       { error: "Username must be at least 3 characters long." },
       { status: 400 }
     );
   }
+
+  const username = usernameRaw.toLowerCase();
+  const displayName = body.displayName?.trim() || username;
 
   if (!password || password.length < 8) {
     return NextResponse.json(

@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 type ChatMessage = {
@@ -20,6 +21,7 @@ const initialMessages: ChatMessage[] = [
 ];
 
 export default function CallPage() {
+  const router = useRouter();
   const [messages, setMessages] = useState<ChatMessage[]>(initialMessages);
   const [input, setInput] = useState("");
   const [micOn, setMicOn] = useState(true);
@@ -40,6 +42,12 @@ export default function CallPage() {
     setInput("");
   };
 
+  const logout = async () => {
+    await fetch("/api/auth/logout", { method: "POST" });
+    router.push("/");
+    router.refresh();
+  };
+
   return (
     <main className="min-h-screen bg-[radial-gradient(circle_at_top_left,_rgba(56,189,248,0.16),_transparent_28%),radial-gradient(circle_at_bottom_right,_rgba(168,85,247,0.14),_transparent_24%),linear-gradient(135deg,#eaf0fa_0%,#f7f9fd_45%,#eef4fd_100%)] text-slate-900">
       <div className="mx-auto flex min-h-[calc(100vh-40px)] max-w-[1500px] gap-0 p-5">
@@ -51,11 +59,11 @@ export default function CallPage() {
             </div>
 
             <Link
-        href="/"
-        className="mt-4 flex h-[46px] w-[46px] items-center justify-center rounded-xl border border-slate-200 bg-white text-2xl shadow-sm transition hover:scale-[1.03]"
-      >
-        ⌂
-      </Link>
+              href="/tasks"
+              className="mt-4 flex h-[46px] w-[46px] items-center justify-center rounded-xl border border-slate-200 bg-white text-2xl shadow-sm transition hover:scale-[1.03]"
+            >
+              ⌂
+            </Link>
 
       <Link
               href="/kanban"
@@ -77,12 +85,12 @@ export default function CallPage() {
         🏆
       </Link>
 
-      <Link
-        href="/"
-        className="mt-3 flex h-[46px] w-[46px] items-center justify-center rounded-xl border border-slate-200 bg-white text-xs font-bold shadow-sm transition hover:scale-[1.03]"
-      >
-        Tasks
-      </Link>
+            <Link
+              href="/tasks"
+              className="mt-3 flex h-[46px] w-[46px] items-center justify-center rounded-xl border border-slate-200 bg-white text-xs font-bold shadow-sm transition hover:scale-[1.03]"
+            >
+              Tasks
+            </Link>
       <Link
         href="/call"
         className="mt-3 flex h-[46px] w-[46px] items-center justify-center rounded-xl border border-slate-200 bg-white text-xl shadow-sm transition hover:scale-[1.03]"
@@ -104,7 +112,15 @@ export default function CallPage() {
         📁
       </Link>
 
-            <div className="mt-5 text-2xl tracking-[6px] text-sky-500">...</div>
+            <button
+              onClick={() => void logout()}
+              className="mt-4 flex h-[46px] w-[46px] items-center justify-center rounded-xl border border-slate-200 bg-white text-[10px] font-bold text-slate-700 shadow-sm transition hover:scale-[1.03]"
+              title="Logout"
+            >
+              OUT
+            </button>
+
+            <div className="mt-4 text-2xl tracking-[6px] text-sky-500">...</div>
           </div>
 
           <div className="flex-1">

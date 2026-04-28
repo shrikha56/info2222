@@ -29,7 +29,7 @@ export const hashPassword = async (password: string) => {
     const argon2 = await import("argon2");
     const hash = await argon2.hash(password, {
       type: argon2.argon2id,
-      saltLength: 16,
+      salt: randomBytes(16),
       memoryCost: 19456,
       timeCost: 2,
       parallelism: 1,

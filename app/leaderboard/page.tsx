@@ -1,4 +1,7 @@
+"use client";
+
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 const topThree = [
   {
@@ -82,6 +85,14 @@ function TrophyCard({
 }
 
 export default function LeaderboardPage() {
+  const router = useRouter();
+
+  const logout = async () => {
+    await fetch("/api/auth/logout", { method: "POST" });
+    router.push("/");
+    router.refresh();
+  };
+
   return (
     <main className="min-h-screen bg-[radial-gradient(circle_at_top_left,_rgba(56,189,248,0.16),_transparent_28%),radial-gradient(circle_at_bottom_right,_rgba(168,85,247,0.14),_transparent_24%),linear-gradient(135deg,#eaf0fa_0%,#f7f9fd_45%,#eef4fd_100%)] text-slate-900">
       <div className="mx-auto flex max-w-[1500px] gap-0 p-5">
@@ -93,11 +104,11 @@ export default function LeaderboardPage() {
             </div>
 
             <Link
-        href="/"
-        className="mt-4 flex h-[46px] w-[46px] items-center justify-center rounded-xl border border-slate-200 bg-white text-2xl shadow-sm transition hover:scale-[1.03]"
-      >
-        ⌂
-      </Link>
+              href="/tasks"
+              className="mt-4 flex h-[46px] w-[46px] items-center justify-center rounded-xl border border-slate-200 bg-white text-2xl shadow-sm transition hover:scale-[1.03]"
+            >
+              ⌂
+            </Link>
 
       <Link
               href="/kanban"
@@ -119,12 +130,12 @@ export default function LeaderboardPage() {
         🏆
       </Link>
 
-      <Link
-        href="/"
-        className="mt-3 flex h-[46px] w-[46px] items-center justify-center rounded-xl border border-slate-200 bg-white text-xs font-bold shadow-sm transition hover:scale-[1.03]"
-      >
-        Tasks
-      </Link>
+            <Link
+              href="/tasks"
+              className="mt-3 flex h-[46px] w-[46px] items-center justify-center rounded-xl border border-slate-200 bg-white text-xs font-bold shadow-sm transition hover:scale-[1.03]"
+            >
+              Tasks
+            </Link>
       <Link
         href="/call"
         className="mt-3 flex h-[46px] w-[46px] items-center justify-center rounded-xl border border-slate-200 bg-white text-xl shadow-sm transition hover:scale-[1.03]"
@@ -146,7 +157,15 @@ export default function LeaderboardPage() {
         📁
       </Link>
 
-            <div className="mt-5 text-2xl tracking-[6px] text-sky-500">...</div>
+            <button
+              onClick={() => void logout()}
+              className="mt-4 flex h-[46px] w-[46px] items-center justify-center rounded-xl border border-slate-200 bg-white text-[10px] font-bold text-slate-700 shadow-sm transition hover:scale-[1.03]"
+              title="Logout"
+            >
+              OUT
+            </button>
+
+            <div className="mt-4 text-2xl tracking-[6px] text-sky-500">...</div>
           </div>
 
           <div className="flex-1">
@@ -176,7 +195,7 @@ export default function LeaderboardPage() {
             </div>
 
             <Link
-              href="/"
+              href="/tasks"
               className="rounded-2xl border border-slate-200 bg-white px-5 py-3 text-sm font-semibold text-slate-700 shadow-sm transition hover:scale-[1.02]"
             >
               Back to Tasks

@@ -26,3 +26,24 @@ Install dependencies and start the development server:
 ```bash
 npm install
 npm run dev
+```
+
+## HTTPS (TLS) Development Mode
+Run the app locally over HTTPS:
+
+```bash
+npm run dev:secure
+```
+
+This starts the dev server at `https://localhost:3000` using Next.js’ HTTPS dev mode.
+
+### TLS version proof (curl)
+If you want to demonstrate minimum TLS enforcement from the client side:
+
+```bash
+# TLS 1.1 should fail
+curl -k --tls-max 1.1 https://localhost:3000/
+
+# TLS 1.2 should succeed
+curl -k --tlsv1.2 https://localhost:3000/
+```
