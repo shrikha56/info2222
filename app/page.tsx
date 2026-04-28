@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useEffect, useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
 
 type UserOption = {
@@ -32,12 +32,6 @@ type ReminderItem = {
   done: boolean;
 };
 
-type AuthUser = {
-  id: string;
-  username: string;
-  displayName: string;
-};
-
 const userOptions: UserOption[] = [
   { name: "you", avatar: "🟣" },
   { name: "user 1", avatar: "🔵" },
@@ -46,13 +40,6 @@ const userOptions: UserOption[] = [
 ];
 
 export default function HomePage() {
-  const [authUser, setAuthUser] = useState<AuthUser | null>(null);
-  const [authLoading, setAuthLoading] = useState(true);
-  const [authMode, setAuthMode] = useState<"login" | "register">("login");
-  const [authUsername, setAuthUsername] = useState("");
-  const [authPassword, setAuthPassword] = useState("");
-  const [authDisplayName, setAuthDisplayName] = useState("");
-  const [authError, setAuthError] = useState("");
   const [schedule, setSchedule] = useState<ScheduleItem[]>([
     { id: 1, task: "Task 1", deadline: "Mar 2", meeting: "Project planning", location: "Feb 28 · Room 1.2" },
     { id: 2, task: "Task 2", deadline: "Mar 3", meeting: "Discussion", location: "Mar 1 · Online" },
@@ -189,150 +176,8 @@ export default function HomePage() {
     );
   };
 
-  useEffect(() => {
-    const loadSession = async () => {
-      try {
-        const response = await fetch("/api/auth/me", { method: "GET" });
-        const data = (await response.json()) as { user: AuthUser | null };
-        setAuthUser(data.user);
-      } catch {
-        setAuthUser(null);
-      } finally {
-        setAuthLoading(false);
-      }
-    };
-
-    void loadSession();
-  }, []);
-
-  const handleAuthSubmit = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    setAuthError("");
-
-    const endpoint = authMode === "login" ? "/api/auth/login" : "/api/auth/register";
-    const payload: { username: string; password: string; displayName?: string } = {
-      username: authUsername.trim(),
-      password: authPassword,
-    };
-    if (authMode === "register") {
-      payload.displayName = authDisplayName.trim() || authUsername.trim();
-    }
-
-    try {
-      const response = await fetch(endpoint, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
-      const data = (await response.json()) as {
-        user?: AuthUser;
-        error?: string;
-      };
-
-      if (!response.ok || !data.user) {
-        setAuthError(data.error ?? "Authentication failed.");
-        return;
-      }
-
-      setAuthUser(data.user);
-      setAuthPassword("");
-    } catch {
-      setAuthError("Unable to reach authentication service.");
-    }
-  };
-
-  const handleLogout = async () => {
-    await fetch("/api/auth/logout", { method: "POST" });
-    setAuthUser(null);
-    setAuthPassword("");
-  };
-
-  if (authLoading) {
-    return (
-      <main className="flex min-h-screen items-center justify-center bg-slate-100 text-slate-700">
-        Loading authentication...
-      </main>
-    );
-  }
-
-  if (!authUser) {
-    return (
-      <main className="flex min-h-screen items-center justify-center bg-slate-100 p-6">
-        <form
-          onSubmit={handleAuthSubmit}
-          className="w-full max-w-md rounded-3xl border border-slate-200 bg-white p-6 shadow-xl"
-        >
-          <h1 className="text-3xl font-semibold text-slate-900">
-            {authMode === "login" ? "Sign in" : "Create account"}
-          </h1>
-          <p className="mt-2 text-sm text-slate-500">
-            Sign in to continue to your workspace.
-          </p>
-
-          <div className="mt-6 space-y-4">
-            <input
-              value={authUsername}
-              onChange={(event) => setAuthUsername(event.target.value)}
-              placeholder="Username"
-              required
-              className="w-full rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-slate-900 placeholder:text-slate-400 focus:border-sky-400 focus:outline-none"
-            />
-            {authMode === "register" && (
-              <input
-                value={authDisplayName}
-                onChange={(event) => setAuthDisplayName(event.target.value)}
-                placeholder="Display name"
-                className="w-full rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-slate-900 placeholder:text-slate-400 focus:border-sky-400 focus:outline-none"
-              />
-            )}
-            <input
-              type="password"
-              value={authPassword}
-              onChange={(event) => setAuthPassword(event.target.value)}
-              placeholder="Password"
-              required
-              minLength={8}
-              className="w-full rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-slate-900 placeholder:text-slate-400 focus:border-sky-400 focus:outline-none"
-            />
-          </div>
-
-          {authError && <p className="mt-4 text-sm text-red-600">{authError}</p>}
-
-          <button
-            type="submit"
-            className="mt-6 w-full rounded-xl bg-sky-600 px-4 py-2.5 font-semibold text-white"
-          >
-            {authMode === "login" ? "Sign in" : "Register"}
-          </button>
-
-          <button
-            type="button"
-            onClick={() => {
-              setAuthError("");
-              setAuthMode((prev) => (prev === "login" ? "register" : "login"));
-            }}
-            className="mt-3 w-full rounded-xl border border-slate-300 px-4 py-2.5 text-sm text-slate-700"
-          >
-            {authMode === "login" ? "Need an account? Register" : "Already have an account? Sign in"}
-          </button>
-        </form>
-      </main>
-    );
-  }
-
   return (
     <main className="min-h-screen bg-[radial-gradient(circle_at_top_left,_rgba(56,189,248,0.16),_transparent_28%),radial-gradient(circle_at_bottom_right,_rgba(168,85,247,0.14),_transparent_24%),linear-gradient(135deg,#eaf0fa_0%,#f7f9fd_45%,#eef4fd_100%)] text-slate-900">
-      <div className="mx-auto flex max-w-[1500px] justify-end p-5 pb-0">
-        <div className="flex items-center gap-3 rounded-2xl border border-slate-200/70 bg-white/80 px-4 py-2 text-sm shadow-sm">
-          <span className="text-slate-600">Signed in as {authUser.displayName}</span>
-          <button
-            onClick={handleLogout}
-            className="rounded-lg bg-slate-900 px-3 py-1.5 text-white"
-          >
-            Logout
-          </button>
-        </div>
-      </div>
      <div className="mx-auto flex max-w-[1500px] gap-0 p-5">
   <aside className="flex w-[235px] shrink-0 overflow-hidden rounded-l-[28px] border border-white/70 bg-white/60 shadow-[0_20px_60px_rgba(15,23,42,0.12)] backdrop-blur-xl">
     <div className="flex w-[70px] flex-col items-center border-r border-slate-200/80 bg-white/50">
