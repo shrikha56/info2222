@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en" class="dark">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <title>Stackd — Student Collaboration Platform</title>
+
+    <!-- Google Fonts -->
+    https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Source+Sans+3:wght@400;600;700&display=swap
+
+    <!-- Tailwind Play CDN -->
+    https://cdn.tailwindcss.com</script>
+    <script>
+      // Tailwind customization (colors + fonts via arbitrary values)
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              ink: {
+                900: '#0b1220',
+                800: '#0f1a2b',
+                700: '#122036',
+              },
+              tealx: {
+                300: '#4fd2c2',
+                400: '#2ad4c3',
+                500: '#16c7b9',
+              },
+              amberx: {
+                300: '#f9c56a',
+                400: '#f7b942',
+                500: '#f6a800',
+              },
+              priority: {
+                low: '#38bdf8',      // sky
+                medium: '#22c55e',   // green
+                high: '#f59e0b',     // amber
+                critical: '#ef4444', // red
+              },
+            },
+          },
+        },
+        darkMode: 'class',
+      };
+    </script>
+
+    <!-- React & Babel (CDN, for quick start) -->
+    https://unpkg.com/react@18/umd/react.development.js</script>
+    https://unpkg.com/react-dom@18/umd/react-dom.development.js</script>
+    https://unpkg.com/@babel/standalone/babel.min.js</script>
+
+    <style>
+      /* Keep it minimal — no external CSS files; fonts applied via inline style or Tailwind arbitrary fonts */
+      html, body, #root { height: 100%; }
+      body {
+        background: #0b1220;
+        color: #e5e7eb;
+        font-family: "Source Sans 3", system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji";
+      }
+    </style>
+  </head>
+  <body class="bg-ink-900">
+    <div id="root" class="h-full"></div>
+
+    <!-- App Code -->
+    ./src/App.jsx</script>
+    <script type="text/babel">
+      const root = ReactDOM.createRoot(document.getElementById('root'));
+      root.render(<App />);
+    </script>
+  </body>
+</html>
